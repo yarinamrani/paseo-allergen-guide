@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#141414">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="פסאו מדריך">
+<title>פסאו — מדריך אלרגנים</title>
+<link rel="manifest" href="data:application/json;base64,">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#141414;--card:#1E1E1E;--border:#333;--olive:#5B7A5E;--gold:#C4A265;--cream:#F5F0E8;--red:#F87171;--red-bg:#3D1518;--red-border:#7F1D1D;--amber:#FBBF24;--amber-bg:#3B2E10;--amber-border:#78350F;--green:#6EE7B7;--green-bg:#1A2E1A;--green-border:#14532D;--blue:#93C5FD;--blue-bg:#172033;--blue-border:#1E3A5F;--purple:#C4B5FD;--purple-bg:#2D1B3E;--purple-border:#4C1D95}
+body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:var(--bg);color:var(--cream);min-height:100vh;min-height:100dvh;overflow-x:hidden}
+input,textarea,select,button{font-family:inherit}
+::-webkit-scrollbar{width:0;height:0}
+.header{background:linear-gradient(135deg,#1A2A1A 0%,#2A1A1A 100%);border-bottom:1px solid var(--border);padding:16px 16px 12px;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.header h1{font-size:20px;font-weight:800;color:var(--gold);letter-spacing:-0.5px}
+.header .sub{font-size:11px;color:#888;margin-top:2px}
+.icon-btn{width:38px;height:38px;border-radius:10px;border:none;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;transition:all .15s}
+.search-box{width:100%;padding:11px 14px;border-radius:10px;border:1px solid #444;background:var(--card);color:var(--cream);font-size:15px;outline:none;direction:rtl}
+.search-box:focus{border-color:var(--olive)}
+.tabs{display:flex;gap:6px;margin-top:10px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.tab{padding:5px 13px;border-radius:999px;border:none;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .15s;background:#2A2A2A;color:#AAA}
+.tab.active{background:var(--olive);color:#fff}
+.filters{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.filter-btn{padding:4px 11px;border-radius:999px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;transition:all .15s;background:transparent;border:1px solid #444;color:#999}
+.filter-btn.active{border-color:var(--gold);background:var(--amber-bg);color:var(--gold)}
+.content{padding:14px 16px 100px}
+.count{font-size:12px;color:#666;margin-bottom:10px}
+.cat-title{font-size:14px;font-weight:700;color:var(--olive);margin:0 0 8px;padding-bottom:5px;border-bottom:1px solid #2A2A2A}
+.cat-group{margin-bottom:22px}
+.dish{background:var(--card);border-radius:12px;padding:14px;cursor:pointer;border:1px solid var(--border);transition:all .2s;margin-bottom:7px}
+.dish.open{border-color:var(--olive);box-shadow:0 0 20px rgba(91,122,94,0.12)}
+.dish-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.dish-name{font-size:16px;font-weight:700;color:var(--cream)}
+.dish-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+.badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:600;white-space:nowrap}
+.badge-red{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.badge-amber{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.badge-green{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.badge-blue{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)}
+.badge-purple{background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-border)}
+.chevron{color:#888;font-size:16px;transition:transform .2s;flex-shrink:0;margin-top:2px}
+.dish.open .chevron{transform:rotate(180deg)}
+.dish-detail{margin-top:12px;border-top:1px solid var(--border);padding-top:12px}
+.dish-desc{color:#AAA;font-size:13px;line-height:1.6;margin-bottom:10px}
+.detail-section{margin-bottom:8px}
+.detail-label{font-size:12px;font-weight:700;margin-bottom:3px}
+.detail-label.allergen{color:var(--red)}
+.detail-label.mod{color:var(--gold)}
+.detail-label.note{color:var(--blue)}
+.detail-item{font-size:12px;padding-right:14px;line-height:1.5}
+.detail-item.allergen{color:#FCA5A5}
+.detail-item.mod{color:#D4B87A}
+.detail-item.note{color:#BFDBFE}
+.footer-rules{background:#1A1A1A;border-top:1px solid var(--border);padding:18px 16px}
+.footer-rules h3{font-size:13px;color:var(--gold);margin-bottom:8px}
+.footer-rules div{font-size:11px;color:#AAA;line-height:1.8}
+.empty{text-align:center;padding:50px 20px;color:#666}
+.empty-icon{font-size:36px;margin-bottom:10px}
+/* Admin */
+.admin-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
+.admin-modal{background:#1E1E1E;border-radius:16px;border:1px solid var(--olive);width:100%;max-width:500px;max-height:90vh;overflow-y:auto;padding:20px}
+.admin-modal h2{font-size:18px;color:var(--gold);margin-bottom:16px}
+.admin-modal label{display:block;font-size:12px;color:#AAA;margin:10px 0 4px;font-weight:600}
+.admin-input{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #444;background:#2A2A2A;color:var(--cream);font-size:14px;outline:none;direction:rtl}
+.admin-input:focus{border-color:var(--olive)}
+.admin-textarea{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #444;background:#2A2A2A;color:var(--cream);font-size:13px;outline:none;direction:rtl;resize:vertical;min-height:60px;font-family:inherit}
+.admin-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.admin-check{display:flex;align-items:center;gap:6px;font-size:12px;color:#CCC;cursor:pointer}
+.admin-check input{width:16px;height:16px;accent-color:var(--olive)}
+.admin-actions{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
+.btn{padding:8px 18px;border-radius:8px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-primary{background:var(--olive);color:#fff}
+.btn-primary:hover{background:#4A6A4E}
+.btn-danger{background:#7F1D1D;color:var(--red)}
+.btn-danger:hover{background:#991B1B}
+.btn-ghost{background:transparent;color:#AAA;border:1px solid #444}
+.btn-ghost:hover{border-color:#666}
+.btn-gold{background:var(--amber-bg);color:var(--gold);border:1px solid var(--amber-border)}
+/* PIN dialog */
+.pin-modal{background:#1E1E1E;border-radius:16px;border:1px solid var(--gold);padding:30px;text-align:center;max-width:320px;width:100%}
+.pin-modal h2{color:var(--gold);font-size:18px;margin-bottom:16px}
+.pin-input{width:140px;padding:12px;border-radius:10px;border:1px solid #444;background:#2A2A2A;color:var(--cream);font-size:24px;text-align:center;letter-spacing:8px;outline:none}
+.pin-input:focus{border-color:var(--gold)}
+.pin-error{color:var(--red);font-size:12px;margin-top:8px}
+/* Floating admin button */
+.fab{position:fixed;bottom:20px;left:20px;width:50px;height:50px;border-radius:50%;background:var(--olive);border:none;color:#fff;font-size:22px;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.4);z-index:50;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.fab:hover{transform:scale(1.08)}
+.fab.admin-active{background:var(--gold);color:#1A1A1A}
+/* Admin list */
+.admin-dish-item{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#2A2A2A;border-radius:8px;margin-bottom:6px}
+.admin-dish-name{font-size:13px;font-weight:600;color:var(--cream)}
+.admin-dish-cat{font-size:11px;color:#888}
+.admin-btns{display:flex;gap:6px}
+.admin-btn-sm{padding:4px 10px;border-radius:6px;border:none;font-size:11px;font-weight:600;cursor:pointer}
+.export-section{margin-top:16px;padding-top:16px;border-top:1px solid #333;display:flex;gap:8px;flex-wrap:wrap}
+.install-banner{display:none;background:var(--olive);color:#fff;padding:10px 16px;font-size:13px;text-align:center;cursor:pointer;font-weight:600}
+</style>
+</head>
+<body>
+
+<div id="install-banner" class="install-banner" onclick="installPWA()">📲 התקן את האפליקציה על המסך הראשי</div>
+
+<div id="app"></div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const DEFAULT_PIN = "1234";
+const STORAGE_KEY = "paseo_allergen_data";
+const PIN_KEY = "paseo_admin_pin";
+const ADMIN_SESSION_KEY = "paseo_admin_session";
+
+const DEFAULT_MENU = [
+  // דגים נאים
+  {id:"d1",name:"סטאקי טונה וואסבי",category:"דגים נאים",description:"טונה צרובה, תערובת טוגראשי, שומשום לבן ושחור, קרם וואסבי, אבוקדו, תחמיץ תאילנדי",allergens:["שומשום"],gluten:false,dairy:false,meat:false,fish:true,raw:true,vegan:false,modifications:["אפשר להוסיף לחם הבית בתוספת תשלום"],serviceNotes:["מגיע בלי לחם — להציע ללקוח תמיד להוסיף לחם הבית"]},
+  {id:"d2",name:"פאני פורי",category:"דגים נאים",description:"סביצ'ה סלמון, קליפת מלפפון, בצל סגול, כוסברה, צ'ילי אדום, פרש יוזו",allergens:["גלוטן"],gluten:true,dairy:false,meat:false,fish:true,raw:true,vegan:false,modifications:["הפאני (הכדורים) הם חטיף מטוגן מהמטבח ההודי ומכילים גלוטן — לא ניתן להפריד"],serviceNotes:["שינוי דרסטי: בלי פרש יוזו = בלי ממרח = פגיעה בטעם. להסביר ללקוח שלא נוכל להחזיר/לבטל"]},
+  {id:"d3",name:"סשימי סלמון",category:"דגים נאים",description:"סלמון, תערובת טוגראשי, שומשום לבן ושחור, קרם וואסבי, אבוקדו, תחמיץ תאילנדי",allergens:["שומשום"],gluten:false,dairy:false,meat:false,fish:true,raw:true,vegan:false,modifications:["אפשר להוסיף לחם הבית בתוספת תשלום"],serviceNotes:["הדג עובר צריבה עם ברנר למעלה — לציין ללקוח שזה נותן טעם מעושן","הדג נשאר נא ברובו, רק בטופ צרוב קלות","מגיע בלי לחם — להציע ללקוח תמיד להוסיף לחם הבית"]},
+  {id:"d4",name:"סביצ'ה דג לבן",category:"דגים נאים",description:"דג לבן דניס, בצל סגול, צ'ילי אדום, לימון טרי, כוסברה, צנונית, שמן צ'ילי, רוטב יוזו",allergens:[],gluten:false,dairy:false,meat:false,fish:true,raw:true,vegan:false,modifications:["אפשר להוסיף לחם הבית בתוספת תשלום"],serviceNotes:["מגיע בלי לחם — להציע ללקוח תמיד להוסיף לחם הבית"]},
+  // ראשונות
+  {id:"r1",name:"לחם הבית",category:"ראשונות",description:"סלסה, שום קונפי, בלסמי",allergens:["גלוטן"],gluten:true,dairy:false,meat:false,fish:false,raw:false,vegan:false,modifications:[],serviceNotes:[]},
+  {id:"r2",name:"צלחת חריפים",category:"ראשונות",description:"פלפל פדרון מטוגן, חריף ביתי, שמן זית, פלפל ירוק",allergens:[],gluten:false,dairy:false,meat:false,fish:false,raw:false,vegan:true,modifications:[],serviceNotes:[]},
+  {id:"r3",name:"פלאפל כרובית וכמהין",category:"ראשונות",description:"3 כדורים של כרובית מגורדת במילוי גבינות ושמן כמהין, על מצע קרם פרש, שמן ירוק, סלסה עגבניות ובלסמי",allergens:[],gluten:false,dairy:true,meat:false,fish:false,raw:false,vegan:false,modifications:[],serviceNotes:["חלבי! לוודא מול לקוח שמזמין גם בשרי שאין בעיה"]},
+  {id:"r4",name:"חציל בלאדי",category:"ראשונות",description:"חציל בלאדי, טחינה ביתית, סלסה עגבניות, פלפל חריף, טוסטונים",allergens:["גלוטן (טוסטונים)"],gluten:true,dairy:false,meat:false,fish:false,raw:false,vegan:true,modifications:["אפשר בלי טוסטונים לצליאקים"],serviceNotes:[]},
+  {id:"r5",name:"קרפצ'יו פילה בקר",category:"ראשונות",description:"בלסמי מצומצם, שמן זית, ארוגולה, צלפים, טוסטונים",allergens:["גלוטן (טוסטונים)"],gluten:true,dairy:false,meat:true,fish:false,raw:true,vegan:false,modifications:[],serviceNotes:["בשרי! לוודא מול לקוח שמזמין גם חלבי שאין בעיה"]},
+  {id:"r6",name:"ציפס אמריקאי",category:"ראשונות",description:"ציפס אמריקאי, תוספת פטה 8 ש\"ח",allergens:["גלוטן (מטוגן בציפסר לא סטרילי)"],gluten:true,dairy:false,meat:false,fish:false,raw:false,vegan:false,modifications:["תוספת פטה 8 ש\"ח"],serviceNotes:["לשאול תמיד את הלקוח אם להוסיף גבינה או לא"]},
+  {id:"r7",name:"צלעות תירס",category:"ראשונות",description:"צלעות תירס מטוגנות, איולי פפריקה ודבש, פרמז'ן מגורד ובצל ירוק",allergens:[],gluten:false,dairy:true,meat:false,fish:false,raw:false,vegan:false,modifications:[],serviceNotes:["ברגע שסיימנו לקיחת הזמנה — לשים בשולחן מראש מפיות/מגבונים וקיסמים!"]},
+  // סלטים
+  {id:"s1",name:"סלט שרי וקרעי מוצרלה",category:"סלטים",description:"שרי צבעוני, בצל סגול, כדור מוצרלה קרוע, עלי רוקט, שמן זית, מלח פלפל, חומץ בלסמי",allergens:[],gluten:false,dairy:true,meat:false,fish:false,raw:false,vegan:false,modifications:[],serviceNotes:[]},
+  {id:"s2",name:"סלט קיסר",category:"סלטים",description:"לבבות חסה, רוטב קיסר קלאסי, קרוטונים, פרמזן",allergens:["גלוטן (קרוטונים)"],gluten:true,dairy:true,meat:false,fish:false,raw:false,vegan:false,modifications:["אפשר בלי קרוטונים לצליאקים"],serviceNotes:[]},
+  {id:"s3",name:"סלט אנדיב",category:"סלטים",description:"מיקס אנדיב סלנובה ולליק, מקלות תפוח עץ, גבינת עזים, אגוזי לוז וקשיו, רוטב ויניגרט שורשים",allergens:["אגוזים (לוז, קשיו)"],gluten:false,dairy:true,meat:false,fish:false,raw:false,vegan:false,modifications:[],serviceNotes:[]},
+  // עיקריות
+  {id:"m1",name:"המבורגר פסאו",category:"עיקריות",description:"המבורגר אנטריקוט 300 גרם, ריבת בצל צרפתית, איולי פפריקה ודבש, עגבניה, חסה, בתוספת ציפס",allergens:["גלוטן"],gluten:true,dairy:false,meat:true,fish:false,raw:false,vegan:false,modifications:[],serviceNotes:[]},
+  {id:"m2",name:"פיצה נפוליטנה",category:"עיקריות",description:"בצק משובח, רוטב עגבניות, מוצרלה",allergens:["גלוטן"],gluten:true,dairy:true,meat:false,fish:false,raw:false,vegan:false,modifications:["תוספות 8 ש\"ח: זיתים / פטריות / פטה / בצל / עגבניה"],serviceNotes:[]},
+  {id:"m3",name:"פיצה ביאנקה",category:"עיקריות",description:"מוצרלה, רוטב בשמל, מיקס פטריות פורטובלו ושמפיניון, שמן כמהין",allergens:["גלוטן"],gluten:true,dairy:true,meat:false,fish:false,raw:false,vegan:false,modifications:[],serviceNotes:[]},
+  {id:"m4",name:"פיש אנד ציפס",category:"עיקריות",description:"רצועות דג לבן בציפוי פנקו, מוגש בליווי ציפס",allergens:["גלוטן (פנקו + ציפסר)"],gluten:true,dairy:false,meat:false,fish:true,raw:false,vegan:false,modifications:[],serviceNotes:[]},
+  {id:"m5",name:"פילה לברק",category:"עיקריות",description:"פילה לברק, קרם כרובית, שמנת, שום קונפי, בצל רך, פרמז'ן, פלפל שחור, מלח ים",allergens:[],gluten:false,dairy:true,meat:false,fish:true,raw:false,vegan:false,modifications:[],serviceNotes:[]},
+  {id:"m6",name:"טורטייה פטריות",category:"עיקריות",description:"איולי פפריקה, אורוגולה, שווארמה פטריות צלויות, סלסה בצל מוחמץ תירס וצ'ילי, פלח לימון",allergens:["גלוטן"],gluten:true,dairy:false,meat:false,fish:false,raw:false,vegan:false,modifications:["אפשר להחליף איולי לטחינה → המנה הופכת טבעונית"],serviceNotes:["המנה צמחונית, לא טבעונית! (בגלל האיולי)"]},
+  {id:"m7",name:"סטייק אנטריקוט",category:"עיקריות",description:"מניפת אנטריקוט לפי משקל (250/300/400 לפי 69 ש\"ח ל-100 גרם), צ'יפס כרישה, רוטב בצל ויין אדום, אספרגוס",allergens:[],gluten:false,dairy:false,meat:true,fish:false,raw:false,vegan:false,modifications:[],serviceNotes:["⚠️ לא להציע מידת עשייה WD! זו מידה שאין ממנה חזרה","MW שעדיין חי מדי — אפשר להחזיר לאש. WD — אי אפשר לתקן","אם לקוח מתעקש על WD — להסביר ולתעד"]},
+  // סושי
+  {id:"su1",name:"סנדוויץ סושי סלמון",category:"סושי",description:"סלמון נא/אפוי, מלפפון, אבוקדו, בטטה, בציפוי פנקו, ספייסי מיונז וטריאקי",allergens:["גלוטן (פנקו, ספייסי מיונז, טריאקי)"],gluten:true,dairy:false,meat:false,fish:true,raw:true,vegan:false,modifications:["אפשר לבחור סלמון אפוי או נא"],serviceNotes:[]},
+  {id:"su2",name:"ספייסי טונה",category:"סושי",description:"טונה אדומה פיקנטית, אספרגוס, מלפפון, טוגראשי, איולי יוזו, מעטפת טונה, צ'ילי חריף, עירית ושומשום",allergens:["גלוטן (איולי)","שומשום"],gluten:true,dairy:false,meat:false,fish:true,raw:true,vegan:false,modifications:[],serviceNotes:["דג נא — אין אפשרות לדג אפוי ברולים עם טונה"]},
+  {id:"su3",name:"בלאק אנד למון",category:"סושי",description:"סלמון טרי, מלפפון, אבוקדו, צ'אנק לימון, מעטפת סלמון, טוביקו שחור, איולי כמהין",allergens:["גלוטן (איולי)"],gluten:true,dairy:false,meat:false,fish:true,raw:true,vegan:false,modifications:["אפשר לבחור סלמון אפוי או נא"],serviceNotes:[]},
+  {id:"su4",name:"גולדן סלמון רול",category:"סושי",description:"סלמון טרי, בטטה, ספייסי מיונז, מלפפון, טריאקי ושקדים קלויים",allergens:["גלוטן (ספייסי מיונז, טריאקי)","אגוזים (שקדים)"],gluten:true,dairy:false,meat:false,fish:true,raw:true,vegan:false,modifications:["אפשר לבחור סלמון אפוי או נא"],serviceNotes:[]},
+  {id:"su5",name:"לונה",category:"סושי",description:"דניס טרי, מלפפון, אושינקו, מעטפת דניס, טוביקו ירוק, גרידת לימון, איולי יוזו",allergens:["גלוטן (איולי)"],gluten:true,dairy:false,meat:false,fish:true,raw:true,vegan:false,modifications:[],serviceNotes:["דג נא — אין אפשרות לדג אפוי ברולים עם דג לבן"]},
+  {id:"su6",name:"ספיישל טרטר",category:"סושי",description:"6 יחידות של מאקי אבוקדו, מלפפון וגזר, טופ של טרטר סלמון, עירית, טוביקו ושמן צ'ילי יוזו",allergens:[],gluten:false,dairy:false,meat:false,fish:true,raw:true,vegan:false,modifications:[],serviceNotes:["תמיד נא — אין אפשרות לאפוי"]},
+  {id:"su7",name:"ווג'י בטטה ואבוקדו",category:"סושי",description:"אושינקו, בטטה, ואבוקדו טופ",allergens:[],gluten:false,dairy:false,meat:false,fish:false,raw:false,vegan:true,modifications:[],serviceNotes:[]},
+  {id:"su8",name:"ווג'י סלק",category:"סושי",description:"אבוקדו, סלק, קמפיו, עירית, אספרגוס במעטפת קריספי סלק",allergens:["גלוטן (קריספי סלק)"],gluten:true,dairy:false,meat:false,fish:false,raw:false,vegan:true,modifications:[],serviceNotes:[]},
+  {id:"su9",name:"ריינבואו",category:"סושי",description:"מלפפון, בטטה, אבוקדו, עירית, מעטפת 3 סוגי דגים — דניס, סלמון וטונה",allergens:[],gluten:false,dairy:false,meat:false,fish:true,raw:true,vegan:false,modifications:[],serviceNotes:[]},
+  {id:"su10",name:"דרגון רול",category:"סושי",description:"סלמון אפוי (אופציה לנא), שיטאקי, קמפיו, בטטה, מעטפת שבבי קריספי בטטה",allergens:["גלוטן (קריספי בטטה)"],gluten:true,dairy:false,meat:false,fish:true,raw:false,vegan:false,modifications:["אפשר לבחור סלמון אפוי או נא"],serviceNotes:[]},
+  // בראנץ'
+  {id:"b1",name:"ארוחת בוקר זוגית/יחיד",category:"בראנץ'",description:"2 ביצים לבחירה, סלסלת לחמים, סלט עלים, סלט טונה, פטה, גבינת שמנת וסומק, חמאה, קונפיטורת תות, גוואקמולי, לאבנה וזעתר + שתייה חמה/קלה",allergens:["גלוטן","אגוזים (אפשרי)"],gluten:true,dairy:true,meat:false,fish:true,raw:false,vegan:false,modifications:[],serviceNotes:["מוגש שישי ושבת בוקר 9:30-12:45 בלבד"]},
+  {id:"b2",name:"ברוסקטה אבוקדו",category:"בראנץ'",description:"קרם אבוקדו, מניפת אבוקדו, פטה מגורדת מעל",allergens:["גלוטן"],gluten:true,dairy:true,meat:false,fish:false,raw:false,vegan:false,modifications:["תוספת ביצת עין 8 ש\"ח"],serviceNotes:["מוגש שישי ושבת בוקר 9:30-12:45 בלבד"]},
+  {id:"b3",name:"טוסט ארבע גבינות",category:"בראנץ'",description:"גאודה, מוצרלה, צ'דר, ביצת עין, רוטב קיסר, פרמז'ן מגורד מעל",allergens:["גלוטן"],gluten:true,dairy:true,meat:false,fish:false,raw:false,vegan:false,modifications:[],serviceNotes:["מוגש שישי ושבת בוקר 9:30-12:45 בלבד"]},
+  {id:"b4",name:"קרואסון תרד וסלמון מעושן",category:"בראנץ'",description:"קרואסון תרד מוקפץ במחאת שמן זית, פלפל, סלמון מעושן, ביצה עלומה ורוטב הולנדייז",allergens:["גלוטן"],gluten:true,dairy:true,meat:false,fish:true,raw:false,vegan:false,modifications:[],serviceNotes:["מוגש שישי ושבת בוקר 9:30-12:45 בלבד"]},
+  {id:"b5",name:"קרואסון סלמון ושמנת",category:"בראנץ'",description:"קרואסון פרצעל, גבינת שמנת, סלמון מעושן, אבוקדו ועלי רוקט",allergens:["גלוטן"],gluten:true,dairy:true,meat:false,fish:true,raw:false,vegan:false,modifications:[],serviceNotes:["מוגש שישי ושבת בוקר 9:30-12:45 בלבד"]},
+  // קינוחים
+  {id:"k1",name:"קרם ברולה",category:"קינוחים",description:"תחתית קראמבל, קרם ברולה, קולי פסיפלורה",allergens:["גלוטן (קראמבל)"],gluten:true,dairy:true,meat:false,fish:false,raw:false,vegan:false,modifications:[],serviceNotes:[]},
+  {id:"k2",name:"טירמיסו די פסאו",category:"קינוחים",description:"שכבות של עוגיות בישקוטי, קרם מסקרפונה, קקאו, רוטב קפוצ'ינו",allergens:["גלוטן"],gluten:true,dairy:true,meat:false,fish:false,raw:false,vegan:false,modifications:[],serviceNotes:[]},
+  {id:"k3",name:"פאדג' שוקולד",category:"קינוחים",description:"עוגת שוקולד חמה, גלידת וניל, קראמבל עוגיות",allergens:["גלוטן (קראמבל)"],gluten:true,dairy:true,meat:false,fish:false,raw:false,vegan:false,modifications:["אפשר בלי קראמבל → העוגה עצמה ללא גלוטן"],serviceNotes:[]},
+  {id:"k4",name:"פונדנט קינדר",category:"קינוחים",description:"פונדנט שוקולדי אפוי מבחוץ עם קרם קינדר ושוקולד נוזלי חם לצד רוטב פיסטוק וכדור גלידה",allergens:["אגוזים (פיסטוק)"],gluten:false,dairy:true,meat:false,fish:false,raw:false,vegan:false,modifications:[],serviceNotes:["⚠️ מכיל אגוזים!"]},
+  {id:"k5",name:"פרלינה שוקולד טבעוני",category:"קינוחים",description:"תחתית עוגיית קקאו, קרם שוקולד מריר, גנאש מוקצף, רוטב פירות יער, אבקת סוכר",allergens:[],gluten:true,dairy:false,meat:false,fish:false,raw:false,vegan:true,modifications:[],serviceNotes:["טבעוני!"]},
+  // קוקטיילים
+  {id:"c1",name:"קוקטייל ללא אלכוהול",category:"קוקטיילים",description:"מיקס אבטיח ואננס, סגירה של מיץ תפוזים",allergens:[],gluten:false,dairy:false,meat:false,fish:false,raw:false,vegan:true,modifications:["אפשר להוסיף אלכוהול בתוספת תשלום"],serviceNotes:["הקוקטייל היחיד ללא גלוטן!"]},
+  {id:"c2",name:"כל שאר הקוקטיילים",category:"קוקטיילים",description:"בור'אצו, ויולטה, וורדה, שי-שי, פינק ליידי, סיאסטה, נוצ'ה טרופיקל, סולי גולד, אלחנדרו, פפג'ינוס, פאשן ג'ין, אפרול שפריץ",allergens:["גלוטן (אלכוהול / מחיות השריה)"],gluten:true,dairy:false,meat:false,fish:false,raw:false,vegan:false,modifications:["אפשר: חמוץ יותר / מתוק יותר","אין אפשרות לשינוי מרכיבים","תוספת אלכוהול (חיזוק) — 15 ש\"ח"],serviceNotes:["כל הקוקטיילים מוכנים מ-0 ועוברים השריות","אפרול שפריץ — לוודא שהלקוח מכיר שזה מריר!"]}
+];
+
+const FILTER_OPTIONS = [
+  {key:"gluten_free",label:"ללא גלוטן",icon:"🌾",check:d=>!d.gluten},
+  {key:"dairy_free",label:"ללא חלבי",icon:"🥛",check:d=>!d.dairy},
+  {key:"vegan",label:"טבעוני",icon:"🌱",check:d=>d.vegan},
+  {key:"no_nuts",label:"ללא אגוזים",icon:"🥜",check:d=>!d.allergens.some(a=>a.includes("אגוזים"))},
+  {key:"fish",label:"דגים",icon:"🐟",check:d=>d.fish},
+  {key:"meat",label:"בשרי",icon:"🥩",check:d=>d.meat},
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let state = {
+  menu: [],
+  search: "",
+  activeCategory: null,
+  activeFilters: [],
+  openDish: null,
+  adminMode: false,
+  showPinDialog: false,
+  showEditor: null, // null | 'new' | dish id
+  pinError: "",
+};
+
+function loadMenu() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch(e) {}
+  return JSON.parse(JSON.stringify(DEFAULT_MENU));
+}
+
+function saveMenu(menu) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(menu));
+}
+
+function getPin() {
+  return localStorage.getItem(PIN_KEY) || DEFAULT_PIN;
+}
+
+function setPin(p) {
+  localStorage.setItem(PIN_KEY, p);
+}
+
+function isAdminSession() {
+  return sessionStorage.getItem(ADMIN_SESSION_KEY) === "true";
+}
+
+function setAdminSession(v) {
+  sessionStorage.setItem(ADMIN_SESSION_KEY, v ? "true" : "false");
+}
+
+state.menu = loadMenu();
+state.adminMode = isAdminSession();
+
+// ============================================================
+// HELPERS
+// ============================================================
+function getCategories(menu) {
+  const cats = [];
+  menu.forEach(d => { if (!cats.includes(d.category)) cats.push(d.category); });
+  return cats;
+}
+
+function filterMenu(menu, search, category, filters) {
+  let items = menu;
+  if (search.trim()) {
+    const q = search.trim().toLowerCase();
+    items = items.filter(d =>
+      d.name.includes(q) || d.description.includes(q) ||
+      d.allergens.some(a => a.includes(q)) || d.category.includes(q)
+    );
+  }
+  if (category) items = items.filter(d => d.category === category);
+  for (const fKey of filters) {
+    const fd = FILTER_OPTIONS.find(f => f.key === fKey);
+    if (fd) items = items.filter(fd.check);
+  }
+  return items;
+}
+
+function groupByCategory(items) {
+  const groups = {};
+  items.forEach(d => {
+    if (!groups[d.category]) groups[d.category] = [];
+    groups[d.category].push(d);
+  });
+  return groups;
+}
+
+function esc(s) {
+  const div = document.createElement('div');
+  div.textContent = s;
+  return div.innerHTML;
+}
+
+function genId() {
+  return 'dish_' + Date.now() + '_' + Math.random().toString(36).substr(2,5);
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function render() {
+  const app = document.getElementById('app');
+  const filtered = filterMenu(state.menu, state.search, state.activeCategory, state.activeFilters);
+  const grouped = groupByCategory(filtered);
+  const categories = getCategories(state.menu);
+
+  let html = '';
+
+  // Header
+  html += `<div class="header">
+    <div class="header-row">
+      <div>
+        <h1>פסאו — מדריך אלרגנים</h1>
+        <div class="sub">חיפוש מנות • אלרגנים • שינויים • הערות שירות${state.adminMode ? ' • <span style="color:var(--gold)">מצב אדמין</span>' : ''}</div>
+      </div>
+      <div style="display:flex;gap:6px">
+        ${state.adminMode ? `<button class="icon-btn" style="background:var(--gold);color:#1A1A1A" onclick="openEditor('new')" title="הוסף מנה">+</button>` : ''}
+        <div class="icon-btn" style="background:var(--olive);color:#fff">🍽</div>
+      </div>
+    </div>
+    <input class="search-box" type="text" placeholder="חיפוש מנה, מרכיב או אלרגן..." value="${esc(state.search)}" oninput="onSearch(this.value)">
+    <div class="tabs">
+      <button class="tab${!state.activeCategory ? ' active' : ''}" onclick="setCategory(null)">הכל</button>
+      ${categories.map(c => `<button class="tab${state.activeCategory === c ? ' active' : ''}" onclick="setCategory('${esc(c)}')">${esc(c)}</button>`).join('')}
+    </div>
+    <div class="filters">
+      ${FILTER_OPTIONS.map(f => `<button class="filter-btn${state.activeFilters.includes(f.key) ? ' active' : ''}" onclick="toggleFilter('${f.key}')">${f.icon} ${f.label}</button>`).join('')}
+    </div>
+  </div>`;
+
+  // Content
+  html += `<div class="content">`;
+  html += `<div class="count">${filtered.length} מנות${state.activeFilters.length > 0 || state.search || state.activeCategory ? ' (מסוננות)' : ''}</div>`;
+
+  const catKeys = Object.keys(grouped);
+  if (catKeys.length === 0) {
+    html += `<div class="empty"><div class="empty-icon">🔍</div><div style="font-size:15px">לא נמצאו מנות תואמות</div><div style="font-size:12px;margin-top:4px">נסה לשנות את החיפוש או הפילטרים</div></div>`;
+  } else {
+    catKeys.forEach(cat => {
+      html += `<div class="cat-group"><h2 class="cat-title">${esc(cat)}</h2>`;
+      grouped[cat].forEach(dish => {
+        const isOpen = state.openDish === dish.id;
+        html += `<div class="dish${isOpen ? ' open' : ''}" onclick="toggleDish('${dish.id}')">`;
+        html += `<div class="dish-header"><div style="flex:1;min-width:0">`;
+        html += `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">`;
+        html += `<span class="dish-name">${esc(dish.name)}</span>`;
+        if (dish.raw) html += `<span class="badge badge-purple">נא</span>`;
+        html += `</div><div class="dish-badges">`;
+        if (dish.gluten) html += `<span class="badge badge-red">גלוטן</span>`;
+        if (dish.dairy) html += `<span class="badge badge-blue">חלבי</span>`;
+        if (dish.meat) html += `<span class="badge badge-red">בשרי</span>`;
+        if (dish.fish) html += `<span class="badge badge-blue">דגים</span>`;
+        if (dish.vegan) html += `<span class="badge badge-green">טבעוני</span>`;
+        dish.allergens.filter(a=>a.includes("אגוזים")).forEach(a => { html += `<span class="badge badge-red">${esc(a)}</span>`; });
+        dish.allergens.filter(a=>a.includes("שומשום")).forEach(a => { html += `<span class="badge badge-amber">${esc(a)}</span>`; });
+        html += `</div></div><span class="chevron">▾</span></div>`;
+
+        if (isOpen) {
+          html += `<div class="dish-detail">`;
+          html += `<p class="dish-desc">${esc(dish.description)}</p>`;
+          if (dish.allergens.length > 0) {
+            html += `<div class="detail-section"><div class="detail-label allergen">⚠️ אלרגנים</div>`;
+            dish.allergens.forEach(a => { html += `<div class="detail-item allergen">• ${esc(a)}</div>`; });
+            html += `</div>`;
+          }
+          if (dish.modifications.length > 0) {
+            html += `<div class="detail-section"><div class="detail-label mod">🔄 שינויים אפשריים</div>`;
+            dish.modifications.forEach(m => { html += `<div class="detail-item mod">• ${esc(m)}</div>`; });
+            html += `</div>`;
+          }
+          if (dish.serviceNotes.length > 0) {
+            html += `<div class="detail-section"><div class="detail-label note">💡 הערות שירות</div>`;
+            dish.serviceNotes.forEach(n => { html += `<div class="detail-item note">• ${esc(n)}</div>`; });
+            html += `</div>`;
+          }
+          if (state.adminMode) {
+            html += `<div style="display:flex;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid #333">
+              <button class="btn btn-gold" onclick="event.stopPropagation();openEditor('${dish.id}')">✏️ ערוך</button>
+              <button class="btn btn-danger" onclick="event.stopPropagation();deleteDish('${dish.id}')">🗑 מחק</button>
+            </div>`;
+          }
+          html += `</div>`;
+        }
+        html += `</div>`;
+      });
+      html += `</div>`;
+    });
+  }
+  html += `</div>`;
+
+  // Footer rules
+  html += `<div class="footer-rules">
+    <h3>⚠️ כללי חשוב</h3>
+    <div>
+      <div>• המטבח אינו נקי מאלרגנים (אגוזים, גלוטן וכו') — לשקף ללקוח!</div>
+      <div>• אלרגיה מסכנת חיים → לפנות למנהל משמרת</div>
+      <div>• יש לחם ללא גלוטן — בתוספת תשלום</div>
+      <div>• ציפס/קריספי בטטה — מטוגנים בציפסר לא סטרילי מגלוטן</div>
+      <div>• בשר + חלב — לוודא מול הלקוח שאין בעיה</div>
+      <div>• סושי מוגש ראשון, שישי, שבת בלבד</div>
+      <div>• בראנץ' — שישי ושבת בוקר 9:30-12:45</div>
+      <div>• רוטב סויה ללא גלוטן — אפשר לבקש לסושי</div>
+    </div>
+    ${state.adminMode ? `<div class="export-section">
+      <button class="btn btn-ghost" onclick="exportData()">📥 ייצוא JSON</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('import-file').click()">📤 ייבוא JSON</button>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+      <button class="btn btn-ghost" onclick="resetData()">🔄 איפוס לברירת מחדל</button>
+      <button class="btn btn-ghost" onclick="changePin()">🔑 שנה PIN</button>
+    </div>` : ''}
+  </div>`;
+
+  // FAB
+  html += `<button class="fab${state.adminMode ? ' admin-active' : ''}" onclick="fabClick()" title="${state.adminMode ? 'יציאה ממצב אדמין' : 'מצב אדמין'}">${state.adminMode ? '🔓' : '🔒'}</button>`;
+
+  app.innerHTML = html;
+
+  // Overlays
+  if (state.showPinDialog) renderPinDialog();
+  if (state.showEditor !== null) renderEditor();
+}
+
+// ============================================================
+// PIN DIALOG
+// ============================================================
+function renderPinDialog() {
+  let overlay = document.getElementById('pin-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'pin-overlay';
+    overlay.className = 'admin-overlay';
+    document.body.appendChild(overlay);
+  }
+  overlay.innerHTML = `
+    <div class="pin-modal">
+      <h2>🔐 כניסת אדמין</h2>
+      <p style="color:#AAA;font-size:13px;margin-bottom:16px">הזן קוד PIN</p>
+      <input class="pin-input" type="password" maxlength="6" id="pin-input" oninput="checkPin(this.value)" autofocus>
+      <div class="pin-error" id="pin-error">${state.pinError}</div>
+      <div style="margin-top:16px"><button class="btn btn-ghost" onclick="closePinDialog()">ביטול</button></div>
+    </div>`;
+  setTimeout(() => { const el = document.getElementById('pin-input'); if(el) el.focus(); }, 50);
+}
+
+function closePinDialog() {
+  state.showPinDialog = false;
+  state.pinError = "";
+  const overlay = document.getElementById('pin-overlay');
+  if (overlay) overlay.remove();
+}
+
+function checkPin(val) {
+  if (val.length >= 4) {
+    if (val === getPin()) {
+      state.adminMode = true;
+      setAdminSession(true);
+      closePinDialog();
+      render();
+    } else {
+      state.pinError = "קוד שגוי";
+      const el = document.getElementById('pin-error');
+      if (el) el.textContent = state.pinError;
+      const inp = document.getElementById('pin-input');
+      if (inp) { inp.value = ''; inp.style.borderColor = 'var(--red)'; setTimeout(()=>{inp.style.borderColor='#444'},600); }
+    }
+  }
+}
+
+// ============================================================
+// EDITOR
+// ============================================================
+function renderEditor() {
+  let overlay = document.getElementById('editor-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'editor-overlay';
+    overlay.className = 'admin-overlay';
+    document.body.appendChild(overlay);
+  }
+
+  const isNew = state.showEditor === 'new';
+  const dish = isNew ? {id:'',name:'',category:'',description:'',allergens:[],gluten:false,dairy:false,meat:false,fish:false,raw:false,vegan:false,modifications:[],serviceNotes:[]} : state.menu.find(d=>d.id===state.showEditor);
+  if (!dish) { closeEditor(); return; }
+
+  const categories = getCategories(state.menu);
+
+  overlay.innerHTML = `
+    <div class="admin-modal">
+      <h2>${isNew ? '➕ מנה חדשה' : '✏️ עריכת מנה'}</h2>
+      <label>שם המנה</label>
+      <input class="admin-input" id="ed-name" value="${esc(dish.name)}">
+      <label>קטגוריה</label>
+      <input class="admin-input" id="ed-category" value="${esc(dish.category)}" list="cat-list" placeholder="בחר או הקלד קטגוריה חדשה">
+      <datalist id="cat-list">${categories.map(c=>`<option value="${esc(c)}">`).join('')}</datalist>
+      <label>תיאור (מרכיבים)</label>
+      <textarea class="admin-textarea" id="ed-desc" rows="3">${esc(dish.description)}</textarea>
+      <label>סימונים</label>
+      <div class="admin-row">
+        <label class="admin-check"><input type="checkbox" id="ed-gluten" ${dish.gluten?'checked':''}> גלוטן</label>
+        <label class="admin-check"><input type="checkbox" id="ed-dairy" ${dish.dairy?'checked':''}> חלבי</label>
+        <label class="admin-check"><input type="checkbox" id="ed-meat" ${dish.meat?'checked':''}> בשרי</label>
+        <label class="admin-check"><input type="checkbox" id="ed-fish" ${dish.fish?'checked':''}> דגים</label>
+        <label class="admin-check"><input type="checkbox" id="ed-raw" ${dish.raw?'checked':''}> נא</label>
+        <label class="admin-check"><input type="checkbox" id="ed-vegan" ${dish.vegan?'checked':''}> טבעוני</label>
+      </div>
+      <label>אלרגנים (שורה לכל אלרגן)</label>
+      <textarea class="admin-textarea" id="ed-allergens" rows="2" placeholder="גלוטן&#10;אגוזים (לוז, קשיו)">${dish.allergens.join('\n')}</textarea>
+      <label>שינויים אפשריים (שורה לכל שינוי)</label>
+      <textarea class="admin-textarea" id="ed-mods" rows="2">${dish.modifications.join('\n')}</textarea>
+      <label>הערות שירות (שורה לכל הערה)</label>
+      <textarea class="admin-textarea" id="ed-notes" rows="2">${dish.serviceNotes.join('\n')}</textarea>
+      <div class="admin-actions">
+        <button class="btn btn-ghost" onclick="closeEditor()">ביטול</button>
+        <button class="btn btn-primary" onclick="saveEditor('${isNew ? 'new' : dish.id}')">💾 שמור</button>
+      </div>
+    </div>`;
+}
+
+function closeEditor() {
+  state.showEditor = null;
+  const overlay = document.getElementById('editor-overlay');
+  if (overlay) overlay.remove();
+}
+
+function saveEditor(id) {
+  const name = document.getElementById('ed-name').value.trim();
+  const category = document.getElementById('ed-category').value.trim();
+  const description = document.getElementById('ed-desc').value.trim();
+  const gluten = document.getElementById('ed-gluten').checked;
+  const dairy = document.getElementById('ed-dairy').checked;
+  const meat = document.getElementById('ed-meat').checked;
+  const fish = document.getElementById('ed-fish').checked;
+  const raw = document.getElementById('ed-raw').checked;
+  const vegan = document.getElementById('ed-vegan').checked;
+  const allergens = document.getElementById('ed-allergens').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  const modifications = document.getElementById('ed-mods').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  const serviceNotes = document.getElementById('ed-notes').value.split('\n').map(s=>s.trim()).filter(Boolean);
+
+  if (!name || !category) { alert('שם וקטגוריה הם שדות חובה'); return; }
+
+  const dish = {id: id === 'new' ? genId() : id, name, category, description, allergens, gluten, dairy, meat, fish, raw, vegan, modifications, serviceNotes};
+
+  if (id === 'new') {
+    state.menu.push(dish);
+  } else {
+    const idx = state.menu.findIndex(d => d.id === id);
+    if (idx >= 0) state.menu[idx] = dish;
+  }
+
+  saveMenu(state.menu);
+  closeEditor();
+  render();
+}
+
+// ============================================================
+// ACTIONS
+// ============================================================
+function onSearch(val) {
+  state.search = val;
+  render();
+  // Restore cursor position
+  const inp = document.querySelector('.search-box');
+  if (inp) { inp.focus(); inp.setSelectionRange(val.length, val.length); }
+}
+
+function setCategory(cat) {
+  state.activeCategory = cat;
+  render();
+}
+
+function toggleFilter(key) {
+  const idx = state.activeFilters.indexOf(key);
+  if (idx >= 0) state.activeFilters.splice(idx, 1);
+  else state.activeFilters.push(key);
+  render();
+}
+
+function toggleDish(id) {
+  state.openDish = state.openDish === id ? null : id;
+  render();
+}
+
+function openEditor(id) {
+  state.showEditor = id;
+  renderEditor();
+}
+
+function deleteDish(id) {
+  const dish = state.menu.find(d => d.id === id);
+  if (!dish) return;
+  if (!confirm(`למחוק את "${dish.name}"?`)) return;
+  state.menu = state.menu.filter(d => d.id !== id);
+  saveMenu(state.menu);
+  if (state.openDish === id) state.openDish = null;
+  render();
+}
+
+function fabClick() {
+  if (state.adminMode) {
+    state.adminMode = false;
+    setAdminSession(false);
+    render();
+  } else {
+    state.showPinDialog = true;
+    renderPinDialog();
+  }
+}
+
+function exportData() {
+  const data = JSON.stringify(state.menu, null, 2);
+  const blob = new Blob([data], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `paseo-menu-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!Array.isArray(data)) throw new Error('Invalid format');
+      if (!confirm(`לייבא ${data.length} מנות? זה יחליף את הנתונים הקיימים.`)) return;
+      state.menu = data;
+      saveMenu(state.menu);
+      render();
+      alert('הייבוא הצליח!');
+    } catch(err) {
+      alert('שגיאה בקובץ: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function resetData() {
+  if (!confirm('לאפס את כל הנתונים לברירת המחדל? כל השינויים שלך יימחקו.')) return;
+  state.menu = JSON.parse(JSON.stringify(DEFAULT_MENU));
+  saveMenu(state.menu);
+  render();
+}
+
+function changePin() {
+  const newPin = prompt('הזן PIN חדש (4-6 ספרות):');
+  if (!newPin || newPin.length < 4 || newPin.length > 6) {
+    alert('PIN חייב להיות 4-6 תווים');
+    return;
+  }
+  setPin(newPin);
+  alert('ה-PIN שונה בהצלחה');
+}
+
+// ============================================================
+// PWA / SERVICE WORKER
+// ============================================================
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const banner = document.getElementById('install-banner');
+  if (banner) banner.style.display = 'block';
+});
+
+function installPWA() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => {
+      deferredPrompt = null;
+      document.getElementById('install-banner').style.display = 'none';
+    });
+  }
+}
+
+// Register inline service worker
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE = 'paseo-allergen-v1';
+    self.addEventListener('install', e => {
+      e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/'])));
+      self.skipWaiting();
+    });
+    self.addEventListener('activate', e => {
+      e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));
+      self.clients.claim();
+    });
+    self.addEventListener('fetch', e => {
+      e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+    });
+  `;
+  const blob = new Blob([swCode], {type: 'application/javascript'});
+  navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
+}
+
+// Generate manifest dynamically
+const manifest = {
+  name: "פסאו — מדריך אלרגנים",
+  short_name: "פסאו מדריך",
+  start_url: ".",
+  display: "standalone",
+  background_color: "#141414",
+  theme_color: "#141414",
+  orientation: "portrait",
+  icons: [{
+    src: "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#5B7A5E"/><text x="50" y="65" text-anchor="middle" font-size="50">🍽</text></svg>'),
+    sizes: "512x512",
+    type: "image/svg+xml"
+  }]
+};
+const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+const manifestUrl = URL.createObjectURL(manifestBlob);
+const link = document.createElement('link');
+link.rel = 'manifest';
+link.href = manifestUrl;
+document.head.appendChild(link);
+
+// ============================================================
+// INIT
+// ============================================================
+render();
+</script>
+</body>
+</html>
